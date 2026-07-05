@@ -21,6 +21,10 @@ node_modules/
 dist/
 build/
 .vite/
+*.tsbuildinfo
+# tsc -b composite emit artifacts for vite config
+admin-web/vite.config.js
+admin-web/vite.config.d.ts
 
 # Android
 android/.gradle/
