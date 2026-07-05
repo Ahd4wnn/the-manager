@@ -25,6 +25,11 @@ ln -sf /etc/nginx/sites-available/api.bmwholistics.in.conf   /etc/nginx/sites-en
 ln -sf /etc/nginx/sites-available/admin.bmwholistics.in.conf /etc/nginx/sites-enabled/
 nginx -t && systemctl reload nginx
 
-echo "==> Done. Backend on http://127.0.0.1:8000 (proxied by nginx)."
-echo "    If TLS not yet issued, run:"
-echo "    certbot --nginx -d api.bmwholistics.in -d admin.bmwholistics.in --redirect -m admin@bmwholistics.in --agree-tos -n"
+# Re-apply TLS: the copied site configs are plain HTTP, so reinstall the
+# existing certs (idempotent, per-domain to avoid --expand prompts).
+echo "==> Re-applying TLS"
+certbot --nginx -d api.bmwholistics.in --redirect -n --keep-until-expiring 2>/dev/null || true
+certbot --nginx -d admin.bmwholistics.in --redirect -n --keep-until-expiring 2>/dev/null || true
+nginx -t && systemctl reload nginx
+
+echo "==> Done. Backend live at https://api.bmwholistics.in"
