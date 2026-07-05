@@ -14,7 +14,9 @@ import {
   IconStethoscope,
   IconUser,
   IconUsers,
+  IconWallet,
 } from "./icons";
+import { BarChart3, Pill } from "lucide-react";
 import type { ReactNode } from "react";
 
 interface NavItem {
@@ -37,7 +39,10 @@ export default function Layout() {
     { to: "/patients", label: "Patients", icon: <IconUser width={19} height={19} />, show: !isAdmin },
     { to: "/appointments", label: "Appointments", icon: <IconCalendar width={19} height={19} />, show: !isAdmin },
     { to: "/treatments", label: "Treatments", icon: <IconStethoscope width={19} height={19} />, show: !isAdmin },
+    { to: "/medicines", label: "Medicines", icon: <Pill size={19} strokeWidth={1.6} />, show: !isAdmin },
     { to: "/billing", label: "Billing", icon: <IconReceipt width={19} height={19} />, show: !isAdmin },
+    { to: "/expenses", label: "Expenses", icon: <IconWallet width={19} height={19} />, show: !isAdmin && canManage(role) },
+    { to: "/reports", label: "Reports", icon: <BarChart3 size={19} strokeWidth={1.6} />, show: !isAdmin && canManage(role) },
     { to: "/staff", label: "Staff", icon: <IconUsers width={19} height={19} />, show: !isAdmin && canManage(role) },
     { to: "/hospitals", label: "Hospitals", icon: <IconBuilding width={19} height={19} />, show: isAdmin },
   ];

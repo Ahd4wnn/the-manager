@@ -44,3 +44,10 @@ class PaymentMethod(str, enum.Enum):
     bank_transfer = "bank_transfer"
     insurance = "insurance"
     other = "other"
+
+
+class MedicineLogAction(str, enum.Enum):
+    restock = "restock"        # new stock added
+    open_packet = "open_packet"  # a new packet/strip was opened
+    use = "use"                # dispensed / consumed (optionally for a patient)
+    adjust = "adjust"          # manual correction

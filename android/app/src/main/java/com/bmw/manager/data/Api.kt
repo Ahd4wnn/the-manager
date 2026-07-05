@@ -1,5 +1,6 @@
 package com.bmw.manager.data
 
+import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -8,6 +9,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Streaming
 
 interface Api {
     @FormUrlEncoded
@@ -58,4 +60,17 @@ interface Api {
 
     @GET("billing/{id}/upi-qr")
     suspend fun upiQr(@Path("id") id: Int): UpiQr
+
+    @Streaming
+    @GET("billing/{id}/pdf")
+    suspend fun invoicePdf(@Path("id") id: Int): ResponseBody
+
+    @GET("medicines")
+    suspend fun medicines(@Query("active_only") activeOnly: Boolean = false): List<Medicine>
+
+    @POST("medicines")
+    suspend fun createMedicine(@Body body: MedicineCreate): Medicine
+
+    @POST("medicines/logs")
+    suspend fun addMedicineLog(@Body body: MedicineLogCreate): MedicineLog
 }

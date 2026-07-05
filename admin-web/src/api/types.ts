@@ -150,4 +150,74 @@ export interface UserWithRole {
   email: string | null;
   is_active: boolean;
   role: Role;
+  designation: string | null;
+  monthly_salary: string | null;
+}
+
+export interface Expense {
+  id: number;
+  hospital_id: number;
+  category: string;
+  amount: string;
+  spent_on: string;
+  note: string | null;
+}
+
+export type MedicineLogAction = "restock" | "open_packet" | "use" | "adjust";
+
+export interface Medicine {
+  id: number;
+  hospital_id: number;
+  name: string;
+  unit: string;
+  pack_size: number | null;
+  current_stock: string;
+  low_stock_threshold: string;
+  is_active: boolean;
+}
+
+export interface MedicineLog {
+  id: number;
+  medicine_id: number;
+  action: MedicineLogAction;
+  quantity: string;
+  patient_id: number | null;
+  note: string | null;
+  happened_at: string;
+}
+
+export interface Bucket {
+  label: string;
+  revenue: string;
+  expenses: string;
+  net: string;
+}
+
+export interface FinancialSummary {
+  from_date: string;
+  to_date: string;
+  total_revenue: string;
+  total_expenses: string;
+  net: string;
+  invoiced: string;
+  outstanding: string;
+  patients: number;
+  invoices: number;
+  buckets: Bucket[];
+}
+
+export interface StaffPerformance {
+  user_id: number;
+  full_name: string;
+  role: Role;
+  designation: string | null;
+  patients_registered: number;
+  treatments_performed: number;
+  payments_collected: string;
+}
+
+export interface StaffPerformanceReport {
+  from_date: string;
+  to_date: string;
+  staff: StaffPerformance[];
 }

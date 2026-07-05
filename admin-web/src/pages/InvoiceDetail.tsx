@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { billingApi } from "../api/endpoints";
 import type { Invoice, PaymentMethod, UpiQr } from "../api/types";
-import { ApiError } from "../api/client";
+import { ApiError, download } from "../api/client";
 import { Modal, Spinner, StatusBadge } from "../components/ui";
-import { IconWallet } from "../components/icons";
+import { IconReceipt, IconWallet } from "../components/icons";
 import { inr, titleCase } from "../lib/format";
 
 export default function InvoiceDetail({
@@ -142,6 +142,12 @@ export default function InvoiceDetail({
 
           {/* Actions */}
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <button
+              className="btn btn-secondary"
+              onClick={() => download(`/billing/${invoice.id}/pdf`, `${invoice.invoice_number}.pdf`)}
+            >
+              <IconReceipt width={16} height={16} /> PDF
+            </button>
             {invoice.status === "draft" && (
               <button className="btn btn-secondary" onClick={issue}>Issue invoice</button>
             )}

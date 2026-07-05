@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
 from decimal import Decimal
+from io import BytesIO
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -20,6 +22,7 @@ from app.schemas.billing import (
 )
 from app.utils.audit import log_action
 from app.utils.numbering import next_invoice_number
+from app.utils.pdf import build_invoice_pdf
 from app.utils.upi import build_upi_uri, qr_png_base64
 
 router = APIRouter()
@@ -241,6 +244,25 @@ def add_payment(
     db.commit()
     db.refresh(payment)
     return payment
+
+
+@router.get("/{invoice_id}/pdf")
+def invoice_pdf(
+    invoice_id: int,
+    ctx: TenantContext = Depends(_STAFF),
+    db: Session = Depends(get_db),
+) -> StreamingResponse:
+    invoice = _get_invoice(db, ctx.hospital.id, invoice_id)
+    patient = db.get(Patient, invoice.patient_id)
+    if patient is None:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    data = build_invoice_pdf(ctx.hospital, patient, invoice)
+    filename = f"{invoice.invoice_number}.pdf"
+    return StreamingResponse(
+        BytesIO(data),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.get("/{invoice_id}/upi-qr", response_model=UpiQrOut)

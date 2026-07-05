@@ -149,3 +149,43 @@ data class UpiQr(
     val upi_uri: String,
     val qr_png_base64: String,
 )
+
+@Serializable
+data class Medicine(
+    val id: Int,
+    val hospital_id: Int,
+    val name: String,
+    val unit: String,
+    val pack_size: Int? = null,
+    val current_stock: String,
+    val low_stock_threshold: String,
+    val is_active: Boolean = true,
+)
+
+@Serializable
+data class MedicineCreate(
+    val name: String,
+    val unit: String = "unit",
+    val pack_size: Int? = null,
+    val current_stock: String = "0",
+    val low_stock_threshold: String = "0",
+)
+
+@Serializable
+data class MedicineLogCreate(
+    val medicine_id: Int,
+    val action: String,   // restock | open_packet | use | adjust
+    val quantity: String = "0",
+    val patient_id: Int? = null,
+    val note: String? = null,
+)
+
+@Serializable
+data class MedicineLog(
+    val id: Int,
+    val medicine_id: Int,
+    val action: String,
+    val quantity: String,
+    val note: String? = null,
+    val happened_at: String,
+)

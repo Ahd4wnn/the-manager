@@ -11,6 +11,9 @@ import Treatments from "./pages/Treatments";
 import Billing from "./pages/Billing";
 import Staff from "./pages/Staff";
 import Hospitals from "./pages/Hospitals";
+import Medicines from "./pages/Medicines";
+import Expenses from "./pages/Expenses";
+import Reports from "./pages/Reports";
 import { canManage } from "./context/AppContext";
 
 function Logout() {
@@ -56,7 +59,10 @@ export default function App() {
             <Route path="patients" element={<Patients />} />
             <Route path="appointments" element={<Appointments />} />
             <Route path="treatments" element={<Treatments />} />
+            <Route path="medicines" element={<Medicines />} />
             <Route path="billing" element={<Billing />} />
+            {manage && <Route path="expenses" element={<Expenses />} />}
+            {manage && <Route path="reports" element={<Reports />} />}
             {manage && <Route path="staff" element={<Staff />} />}
           </>
         ) : null}

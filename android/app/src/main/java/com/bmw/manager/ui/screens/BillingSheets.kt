@@ -27,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,6 +47,7 @@ import com.bmw.manager.ui.SecondaryButton
 import com.bmw.manager.ui.base64ToImageBitmap
 import com.bmw.manager.ui.friendly
 import com.bmw.manager.ui.inr
+import com.bmw.manager.ui.shareInvoicePdf
 import com.bmw.manager.ui.statusTone
 import com.bmw.manager.ui.theme.Accent
 import com.bmw.manager.ui.theme.Green
@@ -132,6 +134,7 @@ fun InvoiceDetailSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     var invoice by remember { mutableStateOf<Invoice?>(null) }
     var qr by remember { mutableStateOf<ImageBitmap?>(null) }
     var qrAmount by remember { mutableStateOf<String?>(null) }
@@ -228,6 +231,12 @@ fun InvoiceDetailSheet(
                     )
                 } else {
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        SecondaryButton(text = "Share PDF") {
+                            scope.launch {
+                                runCatching { shareInvoicePdf(context, invoiceId, inv.invoice_number) }
+                                    .onFailure { error = friendly(it) }
+                            }
+                        }
                         if (inv.status == "draft") {
                             SecondaryButton(text = "Issue") {
                                 scope.launch {

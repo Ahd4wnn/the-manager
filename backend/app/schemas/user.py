@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 from app.models.enums import Role
@@ -31,6 +33,8 @@ class StaffCreate(BaseModel):
     password: str
     email: EmailStr | None = None
     role: Role
+    designation: str | None = None       # e.g. "Cook", "Nurse", "Receptionist"
+    monthly_salary: Decimal | None = None
 
 
 class MembershipOut(BaseModel):
@@ -49,3 +53,5 @@ class UserWithRole(BaseModel):
     email: EmailStr | None = None
     is_active: bool
     role: Role
+    designation: str | None = None
+    monthly_salary: Decimal | None = None

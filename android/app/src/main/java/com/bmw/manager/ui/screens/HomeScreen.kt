@@ -3,8 +3,9 @@ package com.bmw.manager.ui.screens
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material.icons.outlined.Medication
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.ReceiptLong
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,8 +35,9 @@ fun HomeScreen(onLoggedOut: () -> Unit) {
     val tabs = listOf(
         Tab("Patients", Icons.Outlined.Person),
         Tab("Bookings", Icons.Outlined.CalendarMonth),
+        Tab("Medicines", Icons.Outlined.Medication),
         Tab("Billing", Icons.Outlined.ReceiptLong),
-        Tab("Profile", Icons.Outlined.Group),
+        Tab("Profile", Icons.Outlined.PersonOutline),
     )
 
     Scaffold(
@@ -64,7 +66,8 @@ fun HomeScreen(onLoggedOut: () -> Unit) {
             when (index) {
                 0 -> PatientsScreen()
                 1 -> AppointmentsScreen()
-                2 -> BillingScreen()
+                2 -> MedicinesScreen()
+                3 -> BillingScreen()
                 else -> ProfileScreen(onLoggedOut)
             }
         }

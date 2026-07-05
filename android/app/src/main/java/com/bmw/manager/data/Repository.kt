@@ -41,6 +41,11 @@ class Repository(val session: Session) {
     suspend fun issueInvoice(id: Int) = api.issueInvoice(id)
     suspend fun addPayment(id: Int, body: PaymentCreate) = api.addPayment(id, body)
     suspend fun upiQr(id: Int) = api.upiQr(id)
+    suspend fun invoicePdf(id: Int) = api.invoicePdf(id)
+
+    suspend fun medicines() = api.medicines()
+    suspend fun createMedicine(body: MedicineCreate) = api.createMedicine(body)
+    suspend fun addMedicineLog(body: MedicineLogCreate) = api.addMedicineLog(body)
 }
 
 /** Tiny service locator, initialised once in MainActivity. */

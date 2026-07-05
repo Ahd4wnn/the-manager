@@ -1,12 +1,18 @@
 import { api } from "./client";
 import type {
   Appointment,
+  Expense,
+  FinancialSummary,
   Hospital,
   Invoice,
   Me,
+  Medicine,
+  MedicineLog,
+  MedicineLogAction,
   Patient,
   PaymentMethod,
   Role,
+  StaffPerformanceReport,
   Treatment,
   UpiQr,
   UserWithRole,
@@ -44,7 +50,47 @@ export const usersApi = {
     password: string;
     email?: string | null;
     role: Role;
+    designation?: string | null;
+    monthly_salary?: string | null;
   }) => api<UserWithRole>("/users", { method: "POST", body: data }),
+};
+
+export const expensesApi = {
+  list: () => api<Expense[]>("/expenses"),
+  create: (data: { category: string; amount: string; spent_on: string; note?: string | null }) =>
+    api<Expense>("/expenses", { method: "POST", body: data }),
+  remove: (id: number) => api<void>(`/expenses/${id}`, { method: "DELETE" }),
+};
+
+export const medicinesApi = {
+  list: () => api<Medicine[]>("/medicines?active_only=false"),
+  create: (data: {
+    name: string;
+    unit: string;
+    pack_size?: number | null;
+    current_stock?: string;
+    low_stock_threshold?: string;
+  }) => api<Medicine>("/medicines", { method: "POST", body: data }),
+  addLog: (data: {
+    medicine_id: number;
+    action: MedicineLogAction;
+    quantity: string;
+    note?: string | null;
+  }) => api<MedicineLog>("/medicines/logs", { method: "POST", body: data }),
+  logs: (medicineId?: number) =>
+    api<MedicineLog[]>(`/medicines/logs${medicineId ? `?medicine_id=${medicineId}` : ""}`),
+};
+
+export const reportsApi = {
+  financial: (params: { from_date?: string; to_date?: string; granularity: string }) => {
+    const q = new URLSearchParams();
+    if (params.from_date) q.set("from_date", params.from_date);
+    if (params.to_date) q.set("to_date", params.to_date);
+    q.set("granularity", params.granularity);
+    return api<FinancialSummary>(`/reports/financial?${q}`);
+  },
+  staffPerformance: () => api<StaffPerformanceReport>("/reports/staff-performance"),
+  excelUrl: (granularity: string) => `/reports/excel?granularity=${granularity}`,
 };
 
 export const patientsApi = {

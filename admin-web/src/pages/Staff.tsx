@@ -6,7 +6,7 @@ import { useApp } from "../context/AppContext";
 import { Avatar, EmptyState, Modal, Spinner } from "../components/ui";
 import PageHeader from "../components/PageHeader";
 import { IconPlus, IconUsers } from "../components/icons";
-import { initials, titleCase } from "../lib/format";
+import { initials, inr, titleCase } from "../lib/format";
 
 const ROLE_BADGE: Record<Role, string> = {
   admin: "badge-blue",
@@ -70,6 +70,7 @@ export default function Staff() {
                   <th>Name</th>
                   <th>Phone</th>
                   <th>Role</th>
+                  <th>Salary</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -83,7 +84,11 @@ export default function Staff() {
                       </div>
                     </td>
                     <td className="mono muted">{u.phone}</td>
-                    <td><span className={`badge ${ROLE_BADGE[u.role]}`}>{titleCase(u.role)}</span></td>
+                    <td>
+                      <span className={`badge ${ROLE_BADGE[u.role]}`}>{titleCase(u.role)}</span>
+                      {u.designation && <span className="muted tiny" style={{ marginLeft: 6 }}>{u.designation}</span>}
+                    </td>
+                    <td className="mono muted">{u.monthly_salary ? inr(u.monthly_salary) : "—"}</td>
                     <td>
                       {u.is_active ? (
                         <span className="badge badge-green"><span className="badge-dot" />Active</span>
@@ -123,13 +128,13 @@ function AddPersonModal({
   onClose: () => void;
   onDone: () => void;
 }) {
-  const [v, setV] = useState({ full_name: "", phone: "", password: "", role: "staff" as Role });
+  const [v, setV] = useState({ full_name: "", phone: "", password: "", role: "staff" as Role, designation: "", monthly_salary: "" });
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (open) {
-      setV({ full_name: "", phone: "", password: "", role: "staff" });
+      setV({ full_name: "", phone: "", password: "", role: "staff", designation: "", monthly_salary: "" });
       setError(null);
     }
   }, [open]);
@@ -144,6 +149,8 @@ function AddPersonModal({
         phone: v.phone,
         password: v.password,
         role: v.role,
+        designation: v.designation || null,
+        monthly_salary: v.monthly_salary || null,
       });
       onDone();
     } catch (err) {
@@ -172,6 +179,16 @@ function AddPersonModal({
               <option value="doctor">Doctor</option>
               {canAddManager && <option value="manager">Manager</option>}
             </select>
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div className="field">
+            <label className="label">Designation</label>
+            <input className="input" placeholder="Cook, Nurse…" value={v.designation} onChange={(e) => setV({ ...v, designation: e.target.value })} />
+          </div>
+          <div className="field">
+            <label className="label">Monthly salary (₹)</label>
+            <input className="input mono" inputMode="decimal" value={v.monthly_salary} onChange={(e) => setV({ ...v, monthly_salary: e.target.value })} />
           </div>
         </div>
         <div className="field">

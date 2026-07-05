@@ -4,8 +4,11 @@ from app.api.routes import (
     appointments,
     auth,
     billing,
+    expenses,
     hospitals,
+    medicines,
     patients,
+    reports,
     treatments,
     users,
 )
@@ -20,3 +23,6 @@ api_router.include_router(
 )
 api_router.include_router(treatments.router, prefix="/treatments", tags=["treatments"])
 api_router.include_router(billing.router, prefix="/billing", tags=["billing"])
+api_router.include_router(expenses.router, prefix="/expenses", tags=["expenses"])
+api_router.include_router(medicines.router, prefix="/medicines", tags=["medicines"])
+api_router.include_router(reports.router, prefix="/reports", tags=["reports"])

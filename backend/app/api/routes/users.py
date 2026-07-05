@@ -66,7 +66,12 @@ def create_owner(
 
 
 def _attach_membership(
-    db: Session, user_id: int, hospital_id: int, role: Role
+    db: Session,
+    user_id: int,
+    hospital_id: int,
+    role: Role,
+    designation: str | None = None,
+    monthly_salary=None,
 ) -> Membership:
     existing = db.scalar(
         select(Membership).where(
@@ -76,8 +81,18 @@ def _attach_membership(
     )
     if existing:
         existing.role = role
+        if designation is not None:
+            existing.designation = designation
+        if monthly_salary is not None:
+            existing.monthly_salary = monthly_salary
         return existing
-    membership = Membership(user_id=user_id, hospital_id=hospital_id, role=role)
+    membership = Membership(
+        user_id=user_id,
+        hospital_id=hospital_id,
+        role=role,
+        designation=designation,
+        monthly_salary=monthly_salary,
+    )
     db.add(membership)
     db.flush()
     return membership
@@ -109,7 +124,14 @@ def create_hospital_user(
         password=payload.password,
         email=payload.email,
     )
-    _attach_membership(db, user.id, ctx.hospital.id, payload.role)
+    _attach_membership(
+        db,
+        user.id,
+        ctx.hospital.id,
+        payload.role,
+        designation=payload.designation,
+        monthly_salary=payload.monthly_salary,
+    )
     log_action(
         db,
         action="user.create",
@@ -128,6 +150,8 @@ def create_hospital_user(
         email=user.email,
         is_active=user.is_active,
         role=payload.role,
+        designation=payload.designation,
+        monthly_salary=payload.monthly_salary,
     )
 
 
@@ -137,7 +161,7 @@ def list_hospital_users(
     db: Session = Depends(get_db),
 ) -> list[UserWithRole]:
     rows = db.execute(
-        select(User, Membership.role)
+        select(User, Membership)
         .join(Membership, Membership.user_id == User.id)
         .where(
             Membership.hospital_id == ctx.hospital.id,
@@ -152,7 +176,9 @@ def list_hospital_users(
             full_name=u.full_name,
             email=u.email,
             is_active=u.is_active,
-            role=role,
+            role=m.role,
+            designation=m.designation,
+            monthly_salary=m.monthly_salary,
         )
-        for u, role in rows
+        for u, m in rows
     ]
