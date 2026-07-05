@@ -26,7 +26,8 @@ services:
         condition: service_healthy
     ports:
       # Bind to localhost only; nginx on the host terminates TLS and proxies in.
-      - "127.0.0.1:8000:8000"
+      # Host port 8001 (8000 is used by another app on this VPS).
+      - "127.0.0.1:8001:8000"
 
 volumes:
   pgdata:
