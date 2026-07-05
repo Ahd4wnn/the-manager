@@ -1,0 +1,4 @@
+# Keep shell scripts and the entrypoint LF so they run on Linux/containers.
+*.sh text eol=lf
+docker/entrypoint.sh text eol=lf
+gradlew text eol=lf

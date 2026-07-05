@@ -20,13 +20,14 @@ android {
 
     buildTypes {
         debug {
-            // Physical device over USB: run `adb reverse tcp:8000 tcp:8000`
-            // then the device's localhost:8000 reaches your dev machine.
-            buildConfigField("String", "API_BASE", "\"http://localhost:8000/api/v1/\"")
+            // Points at the live backend so the installed app works over any network.
+            // For local dev instead, use "http://localhost:8000/api/v1/" with
+            // `adb reverse tcp:8000 tcp:8000`.
+            buildConfigField("String", "API_BASE", "\"https://api.bmwholistics.in/api/v1/\"")
         }
         release {
             isMinifyEnabled = false
-            buildConfigField("String", "API_BASE", "\"http://localhost:8000/api/v1/\"")
+            buildConfigField("String", "API_BASE", "\"https://api.bmwholistics.in/api/v1/\"")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }

@@ -12,6 +12,7 @@ env/
 # Env / secrets
 .env
 *.local
+deploy/.env.prod
 
 # DB
 *.sqlite3
