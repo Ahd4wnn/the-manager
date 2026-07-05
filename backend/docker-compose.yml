@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bmw_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bmw}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bmw_password}
+      POSTGRES_DB: ${POSTGRES_DB:-bmw_manager}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - bmw_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bmw}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  bmw_pgdata:
